@@ -114,10 +114,13 @@ public class PoblacionBacterias implements Serializable {
         if (dia < 1 || dia > 30) {
             throw new IllegalArgumentException("Día inválido");
         }
+        int cantidadComida = 0;
         if (dia <= diaIncrementoComida) {
-            return dosisComidaInicial + (dia - 1) * (comidaDiaIncremento - dosisComidaInicial) / diaIncrementoComida;
+            cantidadComida = dosisComidaInicial + (dia - 1) * (comidaDiaIncremento - dosisComidaInicial) / diaIncrementoComida;
         } else {
-            return comidaDiaIncremento + (dia - diaIncrementoComida) * (comidaFinalDia30 - comidaDiaIncremento) / (30 - diaIncrementoComida);
+            cantidadComida = comidaDiaIncremento + (dia - diaIncrementoComida) * (comidaFinalDia30 - comidaDiaIncremento) / (30 - diaIncrementoComida);
         }
+        // Asegurar que la cantidad de comida no sea mayor que 300
+        return Math.min(cantidadComida, 300);
     }
 }
