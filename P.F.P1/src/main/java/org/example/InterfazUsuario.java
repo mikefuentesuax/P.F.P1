@@ -1,5 +1,3 @@
-package org.example;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -19,7 +17,6 @@ public class InterfazUsuario {
         frame.setVisible(true);
     }
 
-    // Método para iniciar la interfaz de usuario
     public void iniciar() {
         SwingUtilities.invokeLater(() -> new InterfazUsuario());
     }
