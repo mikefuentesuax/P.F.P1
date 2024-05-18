@@ -1,9 +1,16 @@
 package org.example;
-package org.example;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
-
-public Experimento() {
+import java.util.List;
+public class Experimento {
+    private List<PoblacionBacterias> poblaciones;
+public  Experimento() {
     poblaciones = new ArrayList<>();
 }
 
@@ -48,4 +55,5 @@ public void guardarEnArchivo(String nombreArchivo) {
     } catch (IOException e) {
         System.out.println("Error al guardar en el archivo: " + e.getMessage());
     }
+ }
 }
