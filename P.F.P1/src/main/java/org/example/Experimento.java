@@ -1,31 +1,44 @@
 package org.example;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+
+
 
 public class Experimento implements Serializable {
     private static final long serialVersionUID = 1L; // Añadir un serialVersionUID para la serialización
-    private List<PoblacionBacterias> poblaciones;
+    private Map<String, PoblacionBacterias> poblaciones;
 
     public Experimento() {
-        this.poblaciones = new ArrayList<>();
+        poblaciones = new HashMap<>();
     }
 
     // Método para agregar una población
     public void agregarPoblacion(PoblacionBacterias poblacion) {
-        this.poblaciones.add(poblacion);
+        poblaciones.put(poblacion.getNombre(), poblacion);
     }
 
     // Método para eliminar una población
     public void eliminarPoblacion(PoblacionBacterias poblacion) {
-        this.poblaciones.remove(poblacion);
+        poblaciones.remove(poblacion.getNombre());
     }
 
     // Método para obtener todas las poblaciones
     public List<PoblacionBacterias> obtenerPoblaciones() {
-        return this.poblaciones;
+        return new ArrayList<>(poblaciones.values());
     }
+    public PoblacionBacterias obtenerPoblacionPorNombre(String nombre) {
+        for (PoblacionBacterias poblacion : poblaciones.values()) {
+            if (poblacion.getNombre().equals(nombre)) {
+                return poblacion;
+            }
+        }
+        return null; // Devolver null si no se encuentra ninguna población con ese nombre
+    }
+
 
     // Método estático para abrir un archivo y devolver un objeto Experimento
     public static Experimento abrir(String rutaArchivo) throws IOException, ClassNotFoundException {

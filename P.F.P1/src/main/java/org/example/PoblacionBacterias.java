@@ -111,6 +111,20 @@ public class PoblacionBacterias implements Serializable {
         this.comidaFinalDia30 = comidaFinalDia30;
     }
 
+    @Override
+    public String toString() {
+        return "Nombre: " + nombre +
+                ", Fecha de Inicio: " + fechaInicio +
+                ", Fecha de Fin: " + fechaFin +
+                ", Número de Bacterias Iniciales: " + numBacteriasIniciales +
+                ", Temperatura: " + temperatura +
+                ", Condiciones de Luminosidad: " + condicionesLuminosidad +
+                ", Dosis de Comida Inicial: " + dosisComidaInicial +
+                ", Día de Incremento de Comida: " + diaIncrementoComida +
+                ", Comida por Día de Incremento: " + comidaDiaIncremento +
+                ", Comida Final del Día 30: " + comidaFinalDia30;
+    }
+
     // Métodos para cálculos relacionados con la dosis de comida
     public int calcularComidaDia(int dia) {
         if (dia < 1 || dia > 30) {

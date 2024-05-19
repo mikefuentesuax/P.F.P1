@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
+
+
 public class InterfazUsuario {
     private JFrame frame;
     private Experimento experimento;
@@ -12,17 +15,17 @@ public class InterfazUsuario {
     public InterfazUsuario() {
         experimento = new Experimento();
         frame = new JFrame("Gestión de Experimentos de Bacterias");
-        frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
+        frame.setLayout(new GridBagLayout());
 
-        // Panel para los botones en orden vertical
-        JPanel panelBotones = new JPanel();
-        panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(5, 5, 5, 5); // Espaciado entre los componentes
+        gbc.anchor = GridBagConstraints.WEST;
 
         // Crear los botones con sus respectivos ActionListener
         JButton btnAbrirArchivo = new JButton("1. Abrir archivo que contenga un experimento");
-        btnAbrirArchivo.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnAbrirArchivo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -36,20 +39,20 @@ public class InterfazUsuario {
                 }
             }
         });
-        panelBotones.add(btnAbrirArchivo);
+        frame.add(btnAbrirArchivo, gbc);
 
+        gbc.gridy++;
         JButton btnNuevoExperimento = new JButton("2. Crear un nuevo experimento");
-        btnNuevoExperimento.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnNuevoExperimento.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 experimento = new Experimento();
                 JOptionPane.showMessageDialog(frame, "Nuevo experimento creado.");
             }
         });
-        panelBotones.add(btnNuevoExperimento);
+        frame.add(btnNuevoExperimento, gbc);
 
+        gbc.gridy++;
         JButton btnCrearPoblacion = new JButton("3. Crear una población de bacterias y añadirla al experimento actual");
-        btnCrearPoblacion.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnCrearPoblacion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 CrearPoblacionDialog dialog = new CrearPoblacionDialog(frame);
@@ -64,44 +67,62 @@ public class InterfazUsuario {
                 }
             }
         });
+        frame.add(btnCrearPoblacion, gbc);
 
-        panelBotones.add(btnCrearPoblacion);
-
+        gbc.gridy++;
         JButton btnVisualizarNombres = new JButton("4. Visualizar los nombres de todas las poblaciones de bacterias del experimento actual");
-        btnVisualizarNombres.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnVisualizarNombres.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 StringBuilder nombres = new StringBuilder("Poblaciones de bacterias:\n");
-                for (PoblacionBacterias poblacion : experimento.obtenerPoblaciones()) {
+                List<PoblacionBacterias> poblaciones = experimento.obtenerPoblaciones();
+                for (PoblacionBacterias poblacion : poblaciones) {
                     nombres.append(poblacion.getNombre()).append("\n");
                 }
                 JOptionPane.showMessageDialog(frame, nombres.toString());
             }
         });
-        panelBotones.add(btnVisualizarNombres);
+        frame.add(btnVisualizarNombres, gbc);
 
+        gbc.gridy++;
         JButton btnBorrarPoblacion = new JButton("5. Borrar una población de bacterias del experimento actual");
-        btnBorrarPoblacion.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnBorrarPoblacion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Lógica para borrar una población de bacterias
-                // Mostrar un cuadro de diálogo para seleccionar la población a borrar
+                BorrarPoblacionDialog dialog = new BorrarPoblacionDialog(frame, experimento.obtenerPoblaciones());
+                dialog.setVisible(true);
+
+                if (dialog.isConfirmed()) {
+                    String poblacionSeleccionada = dialog.getSelectedPoblacion();
+                    if (poblacionSeleccionada != null) {
+                        for (PoblacionBacterias poblacion : experimento.obtenerPoblaciones()) {
+                            if (poblacion.getNombre().equals(poblacionSeleccionada)) {
+                                experimento.eliminarPoblacion(poblacion);
+                                JOptionPane.showMessageDialog(frame, "Población de bacterias borrada.");
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         });
-        panelBotones.add(btnBorrarPoblacion);
+        frame.add(btnBorrarPoblacion, gbc);
 
-        JButton btnVerInformacion = new JButton("6. Ver información detallada de una población de bacterias del experimento actual");
-        btnVerInformacion.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
-        btnVerInformacion.addActionListener(new ActionListener() {
+        gbc.gridy++;
+        JButton btnVerDetalles = new JButton("6. Ver Detalles de Población");
+        btnVerDetalles.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Lógica para ver información detallada de una población de bacterias
-                // Mostrar un cuadro de diálogo con la información detallada
+                // Pedir al usuario el nombre de la población de bacterias
+                String nombrePoblacion = JOptionPane.showInputDialog(frame, "Ingrese el nombre de la población de bacterias:");
+                if (nombrePoblacion != null && !nombrePoblacion.isEmpty()) {
+                    mostrarDetallesPoblacion(nombrePoblacion);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Debe ingresar un nombre de población válido.");
+                }
             }
         });
-        panelBotones.add(btnVerInformacion);
+        frame.add(btnVerDetalles, gbc);
 
+        gbc.gridy++;
         JButton btnGuardar = new JButton("7. Guardar");
-        btnGuardar.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnGuardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -115,10 +136,10 @@ public class InterfazUsuario {
                 }
             }
         });
-        panelBotones.add(btnGuardar);
+        frame.add(btnGuardar, gbc);
 
+        gbc.gridy++;
         JButton btnGuardarComo = new JButton("8. Guardar como");
-        btnGuardarComo.setHorizontalAlignment(SwingConstants.LEFT);  // Alinear texto a la izquierda
         btnGuardarComo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -132,11 +153,9 @@ public class InterfazUsuario {
                 }
             }
         });
-        panelBotones.add(btnGuardarComo);
+        frame.add(btnGuardarComo, gbc);
 
-        // Agregar el panel de botones al frame
-        frame.add(panelBotones, BorderLayout.WEST);
-
+        frame.pack();
         frame.setVisible(true);
     }
 
@@ -146,5 +165,15 @@ public class InterfazUsuario {
 
     public static void main(String[] args) {
         new InterfazUsuario().iniciar();
+    }
+
+    private void mostrarDetallesPoblacion(String nombrePoblacion) {
+        PoblacionBacterias poblacion = experimento.obtenerPoblacionPorNombre(nombrePoblacion);
+        if (poblacion != null) {
+            // Aquí puedes mostrar los detalles de la población, por ejemplo:
+            JOptionPane.showMessageDialog(frame, "Detalles de la población:\n" + poblacion.toString());
+        } else {
+            JOptionPane.showMessageDialog(frame, "No se encontró la población con el nombre especificado.");
+        }
     }
 }
