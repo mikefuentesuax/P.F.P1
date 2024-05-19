@@ -3,7 +3,6 @@ package org.example;
 import java.io.Serializable;
 import java.util.Date;
 
-
 public class PoblacionBacterias implements Serializable {
     private String nombre;
     private Date fechaInicio;
